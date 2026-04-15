@@ -5,16 +5,16 @@ import {
   Text,
   View,
   TextInput,
-} from 'react-native';
-import { usePets } from '../hooks/usePets';
-import { useState } from 'react';
+} from 'react-native'
+import { usePets } from '../hooks/usePets'
+import { useState } from 'react'
 
 type PetListScreenProps = {
-  ownerId: string;
-  activePetId: string | null;
-  onLogout: () => Promise<void>;
-  navigation: any;
-};
+  ownerId: string
+  activePetId: string | null
+  onLogout: () => Promise<void>
+  navigation: any
+}
 
 export default function PetListScreen({
   ownerId,
@@ -23,17 +23,17 @@ export default function PetListScreen({
   navigation,
 }: PetListScreenProps) {
   const { pets, loading, error, addPet, editPet, setActivePetForUser } =
-    usePets(ownerId);
+    usePets(ownerId)
 
-  const [editingPetId, setEditingPetId] = useState<string | null>(null);
-  const [editName, setEditName] = useState('');
-  const [editBreed, setEditBreed] = useState('');
+  const [editingPetId, setEditingPetId] = useState<string | null>(null)
+  const [editName, setEditName] = useState('')
+  const [editBreed, setEditBreed] = useState('')
 
-  const [localActivePetId, setLocalActivePetId] = useState(activePetId);
+  const [localActivePetId, setLocalActivePetId] = useState(activePetId)
 
-  const [newPetName, setNewPetName] = useState('');
-  const [newPetBreed, setNewPetBreed] = useState('');
-  const [newPetSize] = useState('medium');
+  const [newPetName, setNewPetName] = useState('')
+  const [newPetBreed, setNewPetBreed] = useState('')
+  const [newPetSize] = useState('medium')
 
   async function handleAddPet() {
     await addPet({
@@ -41,21 +41,21 @@ export default function PetListScreen({
       breed: newPetBreed.trim() || null,
       size: newPetSize,
       can_socialize: true,
-    });
+    })
 
-    setNewPetName('');
-    setNewPetBreed('');
+    setNewPetName('')
+    setNewPetBreed('')
   }
 
   async function handleSaveEdit(petId: string) {
     await editPet(petId, {
       name: editName.trim(),
       breed: editBreed.trim() || null,
-    });
+    })
 
-    setEditingPetId(null);
-    setEditName('');
-    setEditBreed('');
+    setEditingPetId(null)
+    setEditName('')
+    setEditBreed('')
   }
 
   return (
@@ -111,6 +111,33 @@ export default function PetListScreen({
         />
       </View>
 
+      <View style={{ marginBottom: 12 }}>
+        <Button
+          title="Go to Matching"
+          onPress={() => navigation.navigate('Matching', { userId: ownerId })}
+        />
+      </View>
+
+      <View style={{ marginBottom: 12 }}>
+        <Button
+          title="Go to Invite Inbox"
+          onPress={() => {
+            console.log('pressed InviteInbox')
+            navigation.navigate('InviteInbox')
+          }}
+        />
+      </View>
+
+      <View style={{ marginBottom: 12 }}>
+        <Button
+          title="Go to Invite Sent"
+          onPress={() => {
+            console.log('pressed InviteSent')
+            navigation.navigate('InviteSent')
+          }}
+        />
+      </View>
+
       <View style={{ marginBottom: 24 }}>
         <Button title="登出" onPress={onLogout} />
       </View>
@@ -146,8 +173,8 @@ export default function PetListScreen({
               <Button
                 title="Set Active"
                 onPress={async () => {
-                  await setActivePetForUser(pet.id);
-                  setLocalActivePetId(pet.id);
+                  await setActivePetForUser(pet.id)
+                  setLocalActivePetId(pet.id)
                 }}
               />
             </View>
@@ -157,9 +184,9 @@ export default function PetListScreen({
             <Button
               title="Edit Pet"
               onPress={() => {
-                setEditingPetId(pet.id);
-                setEditName(pet.name);
-                setEditBreed(pet.breed ?? '');
+                setEditingPetId(pet.id)
+                setEditName(pet.name)
+                setEditBreed(pet.breed ?? '')
               }}
             />
           </View>
@@ -197,9 +224,9 @@ export default function PetListScreen({
               <Button
                 title="Cancel"
                 onPress={() => {
-                  setEditingPetId(null);
-                  setEditName('');
-                  setEditBreed('');
+                  setEditingPetId(null)
+                  setEditName('')
+                  setEditBreed('')
                 }}
               />
             </View>
@@ -207,5 +234,5 @@ export default function PetListScreen({
         </View>
       ))}
     </ScrollView>
-  );
+  )
 }

@@ -8,6 +8,8 @@ import { useProfile } from './src/features/profile/hooks/useProfile';
 import LoginScreen from './src/features/auth/screens/LoginScreen';
 import PetListScreen from './src/features/pets/screens/PetListScreen';
 import ProfileScreen from './src/features/profile/screens/ProfileScreen';
+import MatchingListScreen from './src/features/matching/screens/MatchingListScreen';
+import MatchingDetailScreen from './src/features/matching/screens/MatchingDetailScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -34,6 +36,14 @@ function MainStack({
       <Stack.Screen name="Profile">
         {() => <ProfileScreen userId={profile.id} />}
       </Stack.Screen>
+      <Stack.Screen name="Matching" component={MatchingListScreen} />
+      <Stack.Screen
+        name="MatchingDetail"
+        component={MatchingDetailScreen}
+        options={({ route }: any) => ({
+          title: route.params?.pet?.name ?? 'Pet Detail',
+        })}
+      />
     </Stack.Navigator>
   );
 }
