@@ -3,6 +3,8 @@ import { supabase } from '../../../lib/supabase';
 import {
   getCurrentSession,
   signInAnonymously,
+  signInWithGoogle,
+  signInWithApple,
   signOut,
 } from '../services/authService';
 
@@ -46,6 +48,30 @@ export function useAuth() {
     };
   }, []);
 
+  async function loginWithGoogle() {
+    try {
+      setAuthLoading(true);
+      setError(null);
+      await signInWithGoogle();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Google login failed');
+    } finally {
+      setAuthLoading(false);
+    }
+  }
+
+  async function loginWithApple() {
+    try {
+      setAuthLoading(true);
+      setError(null);
+      await signInWithApple();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Apple login failed');
+    } finally {
+      setAuthLoading(false);
+    }
+  }
+
   async function login() {
     try {
       setAuthLoading(true);
@@ -76,6 +102,8 @@ export function useAuth() {
     authLoading,
     error,
     isLoggedIn: !!user,
+    loginWithGoogle,
+    loginWithApple,
     login,
     logout,
   };

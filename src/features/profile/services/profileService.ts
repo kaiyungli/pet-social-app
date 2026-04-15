@@ -38,6 +38,34 @@ export async function createProfile(userId: string): Promise<Profile> {
   return data;
 }
 
+//update pet profile
+export async function updateProfile(
+  userId: string,
+  updates: {
+    display_name?: string;
+    bio?: string | null;
+    area_text?: string | null;
+    is_searchable?: boolean;
+    allow_contact_share?: boolean;
+    avatar_url?: string | null;
+  }
+) {
+  const { data, error } = await supabase
+    .from('profiles')
+    .update(updates)
+    .eq('id', userId)
+    .select('*')
+    .single();
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return data;
+}
+
+
+
 export async function setActivePet(userId: string, petId: string) {
   const { error } = await supabase
     .from('profiles')

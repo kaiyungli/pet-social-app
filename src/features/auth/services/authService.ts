@@ -10,6 +10,33 @@ export async function signInAnonymously() {
   return data;
 }
 
+//For IOS
+export async function signInWithApple() {
+  const { data, error } = await supabase.auth.signInWithOAuth({
+    provider: 'apple',
+  });
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return data;
+}
+
+//For Google
+export async function signInWithGoogle() {
+  const { data, error } = await supabase.auth.signInWithOAuth({
+    provider: 'google',
+  });
+
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return data;
+}
+
+
 export async function getCurrentSession() {
   const { data, error } = await supabase.auth.getSession();
 

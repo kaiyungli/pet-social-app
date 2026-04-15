@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { createPet, getPetsByOwner } from '../services/petService';
+import { createPet, getPetsByOwner, updatePet } from '../services/petService';
 import type { Pet } from '../types';
 import { setActivePet } from '../../profile/services/profileService';
 
@@ -32,6 +32,7 @@ export function usePets(ownerId: string) {
   //create pet
   async function addPet(newPet: {
     name: string;
+    breed?: string | null;
     size: string;
     can_socialize: boolean;
   }) {
@@ -60,6 +61,51 @@ export function usePets(ownerId: string) {
     }
   }
 
-  
-  return { pets, loading, error, addPet };
+  //update pet
+  async function editPet(
+  petId: string,
+  updates: {
+    name?: string;
+    breed?: string | null;
+    size?: string;
+    can_socialize?: boolean;
+    bio?: string | null;
+    interests_text?: string | null;
+  }
+  ) {
+  try {
+    setLoading(true);
+    setError(null);
+
+    await updatePet(petId, updates);
+
+    const updatedPets = await getPetsByOwner(ownerId);
+    setPets(updatedPets);
+  } catch (err) {
+    setError(err instanceof Error ? err.message : 'Update failed');
+  } finally {
+    setLoading(false);
+  }
+  }
+
+  //set active pet
+  async function setActivePetForUser(petId: string) {
+    try {
+      setLoading(true);
+      setError(null);
+
+      await setActivePet(ownerId, petId);
+
+      // ⭐重要：refresh list（雖然 technically 不需要，但穩陣）
+      const updatedPets = await getPetsByOwner(ownerId);
+      setPets(updatedPets);
+
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Failed to set active pet');
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  return { pets, loading, error, addPet, editPet, setActivePetForUser };
 }

@@ -1,39 +1,44 @@
 import { ActivityIndicator, Button, Text, View } from 'react-native';
 
 type LoginScreenProps = {
-  onLogin: () => Promise<void>;
+  onGoogleLogin: () => Promise<void>;
+  onAppleLogin: () => Promise<void>;
   loading: boolean;
   error: string | null;
 };
 
 export default function LoginScreen({
-  onLogin,
+  onGoogleLogin,
+  onAppleLogin,
   loading,
   error,
 }: LoginScreenProps) {
   return (
-    <View
-      style={{
-        flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        padding: 24,
-      }}
-    >
-      <Text style={{ fontSize: 24, fontWeight: '700', marginBottom: 12 }}>
-        Pet Social App
+    <View style={{ flex: 1, justifyContent: 'center', padding: 24 }}>
+      <Text style={{ fontSize: 28, fontWeight: '700', marginBottom: 24 }}>
+        Dog Social App
       </Text>
 
-      <Text style={{ fontSize: 16, marginBottom: 24 }}>請先登入</Text>
+      <View style={{ marginBottom: 12 }}>
+        <Button
+          title="Continue with Google"
+          onPress={onGoogleLogin}
+          disabled={loading}
+        />
+      </View>
 
-      {loading ? (
-        <ActivityIndicator />
-      ) : (
-        <Button title="匿名登入" onPress={onLogin} />
-      )}
+      <View style={{ marginBottom: 12 }}>
+        <Button
+          title="Continue with Apple"
+          onPress={onAppleLogin}
+          disabled={loading}
+        />
+      </View>
+
+      {loading ? <ActivityIndicator style={{ marginTop: 16 }} /> : null}
 
       {error ? (
-        <Text style={{ color: 'red', marginTop: 16, textAlign: 'center' }}>
+        <Text style={{ color: 'red', marginTop: 16 }}>
           {error}
         </Text>
       ) : null}
