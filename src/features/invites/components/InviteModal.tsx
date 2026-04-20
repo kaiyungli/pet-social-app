@@ -7,54 +7,59 @@ import {
   Pressable,
   StyleSheet,
 } from 'react-native'
-import { useSendInvite } from '../hooks/useSendInvite'
 import type { InviteType } from '../types/inviteTypes'
 
 type Props = {
   visible: boolean
   onClose: () => void
-  fromUserId: string
-  toUserId: string
-  fromPetId: string
-  toPetId: string
+  onSubmit: (payload: { type: InviteType; message?: string }) => Promise<void>
+  loading?: boolean
+  error?: string | null
 }
 
 export default function InviteModal({
   visible,
   onClose,
-  fromUserId,
-  toUserId,
-  fromPetId,
-  toPetId,
+  onSubmit,
+  loading = false,
+  error = null,
 }: Props) {
-  const { send, loading, error } = useSendInvite()
   const [type, setType] = useState<InviteType>('walk')
   const [message, setMessage] = useState('')
-  const [proposedTime, setProposedTime] = useState('')
+
+  function resetForm() {
+    setType('walk')
+    setMessage('')
+  }
+
+  function handleClose() {
+    resetForm()
+    onClose()
+  }
 
   async function handleSubmit() {
-    try {
-      await send({
-        from_user_id: fromUserId,
-        to_user_id: toUserId,
-        from_pet_id: fromPetId,
-        to_pet_id: toPetId,
-        type,
-        message,
-        proposed_time: proposedTime || null,
-      })
+    if (loading) return
 
-      setMessage('')
-      setProposedTime('')
-      setType('walk')
-      onClose()
+    const cleanedMessage = message.trim()
+
+    try {
+      await onSubmit({
+        type,
+        message: cleanedMessage || undefined,
+      })
+      handleClose()
     } catch {
-      // error handled in hook
+      // error handled by parent hook
     }
   }
 
   return (
-    <Modal visible={visible} transparent animationType="slide">
+    <Modal
+      visible={visible}
+      transparent
+      animationType="slide"
+      onRequestClose={handleClose}
+    >
       <View style={styles.overlay}>
         <View style={styles.modal}>
           <Text style={styles.title}>Send Invite</Text>
@@ -100,19 +105,13 @@ export default function InviteModal({
             placeholder="Optional message"
             value={message}
             onChangeText={setMessage}
-          />
-
-          <TextInput
-            style={styles.input}
-            placeholder="Optional proposed time (ISO string for now)"
-            value={proposedTime}
-            onChangeText={setProposedTime}
+            multiline
           />
 
           {error ? <Text style={styles.errorText}>{error}</Text> : null}
 
           <View style={styles.actionRow}>
-            <Pressable style={styles.secondaryButton} onPress={onClose}>
+            <Pressable style={styles.secondaryButton} onPress={handleClose}>
               <Text style={styles.secondaryButtonText}>Close</Text>
             </Pressable>
 
@@ -180,6 +179,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 12,
     paddingVertical: 12,
     marginBottom: 12,
+    minHeight: 88,
+    textAlignVertical: 'top',
   },
   errorText: {
     color: '#dc2626',

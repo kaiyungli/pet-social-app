@@ -1,50 +1,51 @@
 import { useState } from 'react'
-import { Pressable, Text, StyleSheet } from 'react-native'
-import InviteModal from './InviteModal'
+import { View, Text, Pressable } from 'react-native'
+import InviteModal from '../../invites/components/InviteModal'
+import { useInvites } from '../../invites/hooks/useInvites'
 
 type Props = {
-  fromUserId: string
-  toUserId: string
-  fromPetId: string
-  toPetId: string
+  currentUserId: string
+  activePetId: string
+  targetUserId: string
+  targetPetId: string
 }
 
-export default function InviteButton({
-  fromUserId,
-  toUserId,
-  fromPetId,
-  toPetId,
+export default function PublicPetDetailInviteSection({
+  currentUserId,
+  activePetId,
+  targetUserId,
+  targetPetId,
 }: Props) {
-  const [visible, setVisible] = useState(false)
+  const [isInviteModalVisible, setIsInviteModalVisible] = useState(false)
+  const { sendInvite, loading, error } = useInvites(currentUserId)
+
+  async function handleSubmitInvite(values: {
+    type: 'walk' | 'playdate'
+    message?: string
+  }) {
+    await sendInvite({
+      fromUserId: currentUserId,
+      toUserId: targetUserId,
+      fromPetId: activePetId,
+      toPetId: targetPetId,
+      type: values.type,
+      message: values.message,
+    })
+  }
 
   return (
-    <>
-      <Pressable style={styles.button} onPress={() => setVisible(true)}>
-        <Text style={styles.buttonText}>Invite</Text>
+    <View>
+      <Pressable onPress={() => setIsInviteModalVisible(true)}>
+        <Text>Invite</Text>
       </Pressable>
 
       <InviteModal
-        visible={visible}
-        onClose={() => setVisible(false)}
-        fromUserId={fromUserId}
-        toUserId={toUserId}
-        fromPetId={fromPetId}
-        toPetId={toPetId}
+        visible={isInviteModalVisible}
+        onClose={() => setIsInviteModalVisible(false)}
+        onSubmit={handleSubmitInvite}
+        loading={loading}
+        error={error}
       />
-    </>
+    </View>
   )
 }
-
-const styles = StyleSheet.create({
-  button: {
-    backgroundColor: '#111827',
-    borderRadius: 10,
-    paddingVertical: 12,
-    paddingHorizontal: 16,
-    alignItems: 'center',
-  },
-  buttonText: {
-    color: '#fff',
-    fontWeight: '700',
-  },
-})

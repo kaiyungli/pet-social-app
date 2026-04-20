@@ -4,9 +4,9 @@ import type { InviteRecord } from '../types/inviteTypes'
 type Props = {
   invite: InviteRecord
   mode: 'received' | 'sent'
-  onAccept?: (inviteId: string) => void
-  onReject?: (inviteId: string) => void
-  onCancel?: (inviteId: string) => void
+  onAccept?: (inviteId: string) => Promise<void>
+  onReject?: (inviteId: string) => Promise<void>
+  onCancel?: (inviteId: string) => Promise<void>
 }
 
 export default function InviteCard({
@@ -16,50 +16,29 @@ export default function InviteCard({
   onReject,
   onCancel,
 }: Props) {
+  const isPending = invite.status === 'pending'
+
   return (
     <View style={styles.card}>
-      <Text style={styles.title}>
-        {invite.type === 'walk' ? 'Walk Invite' : 'Playdate Invite'}
-      </Text>
+      <Text style={styles.title}>{invite.type}</Text>
+      <Text>Status: {invite.status}</Text>
+      {invite.message ? <Text>{invite.message}</Text> : null}
 
-      <Text style={styles.meta}>Status: {invite.status}</Text>
-      <Text style={styles.meta}>Created: {formatDate(invite.created_at)}</Text>
-
-      {invite.message ? (
-        <Text style={styles.message}>Message: {invite.message}</Text>
-      ) : null}
-
-      {invite.proposed_time ? (
-        <Text style={styles.meta}>
-          Proposed Time: {formatDate(invite.proposed_time)}
-        </Text>
-      ) : null}
-
-      {mode === 'received' && invite.status === 'pending' ? (
-        <View style={styles.actionsRow}>
-          <Pressable
-            style={[styles.button, styles.acceptButton]}
-            onPress={() => onAccept?.(invite.id)}
-          >
-            <Text style={styles.buttonText}>Accept</Text>
+      {mode === 'received' && isPending ? (
+        <View style={styles.row}>
+          <Pressable style={styles.secondaryBtn} onPress={() => onReject?.(invite.id)}>
+            <Text>Reject</Text>
           </Pressable>
-
-          <Pressable
-            style={[styles.button, styles.rejectButton]}
-            onPress={() => onReject?.(invite.id)}
-          >
-            <Text style={styles.buttonText}>Reject</Text>
+          <Pressable style={styles.primaryBtn} onPress={() => onAccept?.(invite.id)}>
+            <Text style={styles.primaryBtnText}>Accept</Text>
           </Pressable>
         </View>
       ) : null}
 
-      {mode === 'sent' && invite.status === 'pending' ? (
-        <View style={styles.actionsRow}>
-          <Pressable
-            style={[styles.button, styles.cancelButton]}
-            onPress={() => onCancel?.(invite.id)}
-          >
-            <Text style={styles.buttonText}>Cancel</Text>
+      {mode === 'sent' && isPending ? (
+        <View style={styles.row}>
+          <Pressable style={styles.secondaryBtn} onPress={() => onCancel?.(invite.id)}>
+            <Text>Cancel</Text>
           </Pressable>
         </View>
       ) : null}
@@ -67,19 +46,11 @@ export default function InviteCard({
   )
 }
 
-function formatDate(value: string) {
-  try {
-    return new Date(value).toLocaleString()
-  } catch {
-    return value
-  }
-}
-
 const styles = StyleSheet.create({
   card: {
     backgroundColor: '#fff',
     borderRadius: 12,
-    padding: 16,
+    padding: 14,
     marginBottom: 12,
     borderWidth: 1,
     borderColor: '#e5e7eb',
@@ -89,38 +60,26 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     marginBottom: 8,
   },
-  meta: {
-    fontSize: 14,
-    color: '#4b5563',
-    marginBottom: 4,
-  },
-  message: {
-    fontSize: 14,
-    color: '#111827',
-    marginTop: 8,
-    marginBottom: 8,
-  },
-  actionsRow: {
+  row: {
     flexDirection: 'row',
-    marginTop: 12,
+    justifyContent: 'flex-end',
     gap: 8,
+    marginTop: 12,
   },
-  button: {
+  primaryBtn: {
+    backgroundColor: '#111827',
     paddingVertical: 10,
     paddingHorizontal: 14,
     borderRadius: 10,
   },
-  acceptButton: {
-    backgroundColor: '#16a34a',
-  },
-  rejectButton: {
-    backgroundColor: '#dc2626',
-  },
-  cancelButton: {
-    backgroundColor: '#6b7280',
-  },
-  buttonText: {
+  primaryBtnText: {
     color: '#fff',
     fontWeight: '600',
+  },
+  secondaryBtn: {
+    backgroundColor: '#f3f4f6',
+    paddingVertical: 10,
+    paddingHorizontal: 14,
+    borderRadius: 10,
   },
 })

@@ -1,5 +1,4 @@
 export type InviteType = 'walk' | 'playdate'
-
 export type InviteStatus =
   | 'pending'
   | 'accepted'
@@ -7,15 +6,7 @@ export type InviteStatus =
   | 'expired'
   | 'cancelled'
 
-export type SendInvitePayload = {
-  from_user_id: string
-  to_user_id: string
-  from_pet_id: string
-  to_pet_id: string
-  type: InviteType
-  message?: string | null
-  proposed_time?: string | null
-}
+export type MatchStatus = 'active' | 'ended'
 
 export type InviteRecord = {
   id: string
@@ -24,10 +15,35 @@ export type InviteRecord = {
   from_pet_id: string
   to_pet_id: string
   type: InviteType
-  status: InviteStatus
   message: string | null
+  status: InviteStatus
   proposed_time: string | null
-  responded_at?: string | null
-  expires_at?: string | null
+  expires_at: string | null
+  responded_at: string | null
   created_at: string
 }
+
+export type MatchRecord = {
+  id: string
+  invite_id: string
+  user_a_id: string
+  user_b_id: string
+  pet_a_id: string
+  pet_b_id: string
+  status: MatchStatus
+  matched_at: string
+  ended_at: string | null
+}
+
+export type CreateInviteInput = {
+  fromUserId: string
+  toUserId: string
+  fromPetId: string
+  toPetId: string
+  type: InviteType
+  message?: string
+  proposedTime?: string | null
+  expiresAt?: string | null
+}
+
+export type RespondInviteAction = 'accept' | 'reject'

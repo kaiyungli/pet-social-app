@@ -10,6 +10,8 @@ import PetListScreen from './src/features/pets/screens/PetListScreen';
 import ProfileScreen from './src/features/profile/screens/ProfileScreen';
 import MatchingListScreen from './src/features/matching/screens/MatchingListScreen';
 import MatchingDetailScreen from './src/features/matching/screens/MatchingDetailScreen';
+import InviteInboxScreen from './src/features/invites/screens/InviteInboxScreen'
+import InviteSentScreen from './src/features/invites/screens/InviteSentScreen'
 
 const Stack = createNativeStackNavigator();
 
@@ -44,6 +46,17 @@ function MainStack({
           title: route.params?.pet?.name ?? 'Pet Detail',
         })}
       />
+      <Stack.Screen
+  name="InviteInbox"
+  component={InviteInboxScreen}
+  options={{ title: 'Received Invites' }}
+/>
+
+<Stack.Screen
+  name="InviteSent"
+  component={InviteSentScreen}
+  options={{ title: 'Sent Invites' }}
+/>
     </Stack.Navigator>
   );
 }

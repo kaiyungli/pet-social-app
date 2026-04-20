@@ -26,7 +26,11 @@ export default function InviteSentScreen() {
         data={sentInvites}
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
-          <InviteCard invite={item} mode="sent" onCancel={cancelInvite} />
+          <InviteCard
+            invite={item}
+            mode="sent"
+            onCancel={cancelInvite}
+          />
         )}
         ListEmptyComponent={!loading ? <Text>No sent invites</Text> : null}
       />
