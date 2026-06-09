@@ -10,7 +10,7 @@ type Props = {
   targetPetId: string
 }
 
-export default function PublicPetDetailInviteSection({
+export default function InviteButton({
   currentUserId,
   activePetId,
   targetUserId,

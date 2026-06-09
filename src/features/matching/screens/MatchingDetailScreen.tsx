@@ -53,10 +53,10 @@ export default function MatchingDetailScreen({ route }: any) {
 
       {currentUserId && activePetId ? (
         <InviteButton
-          fromUserId={currentUserId}
-          toUserId={pet.owner_id}
-          fromPetId={activePetId}
-          toPetId={pet.id}
+          currentUserId={currentUserId}
+          activePetId={activePetId}
+          targetUserId={pet.owner_id}
+          targetPetId={pet.id}
         />
       ) : (
         <Text>Please set an active pet first</Text>

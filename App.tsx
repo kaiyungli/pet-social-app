@@ -13,7 +13,12 @@ import MatchingDetailScreen from './src/features/matching/screens/MatchingDetail
 import InviteInboxScreen from './src/features/invites/screens/InviteInboxScreen'
 import InviteSentScreen from './src/features/invites/screens/InviteSentScreen'
 
-const Stack = createNativeStackNavigator();
+import ThreadListScreen from './src/features/chat/screens/ThreadListScreen';
+import ThreadDetailScreen from './src/features/chat/screens/ThreadDetailScreen';
+
+import type { RootStackParamList } from "./src/navigation/navigationTypes"
+
+const Stack = createNativeStackNavigator<RootStackParamList>()
 
 function MainStack({
   profile,
@@ -47,16 +52,28 @@ function MainStack({
         })}
       />
       <Stack.Screen
-  name="InviteInbox"
-  component={InviteInboxScreen}
-  options={{ title: 'Received Invites' }}
-/>
+        name="InviteInbox"
+        component={InviteInboxScreen}
+        options={{ title: 'Received Invites' }}
+      />
 
-<Stack.Screen
-  name="InviteSent"
-  component={InviteSentScreen}
-  options={{ title: 'Sent Invites' }}
-/>
+      <Stack.Screen
+        name="InviteSent"
+        component={InviteSentScreen}
+        options={{ title: 'Sent Invites' }}
+      />
+
+      <Stack.Screen
+        name="ThreadList"
+        component={ThreadListScreen}
+        options={{ title: 'Chats' }}
+      />
+
+      <Stack.Screen
+        name="ThreadDetail"
+        component={ThreadDetailScreen}
+        options={{ title: 'Chat' }}
+      />
     </Stack.Navigator>
   );
 }
@@ -124,6 +141,7 @@ export default function App() {
   }
 
   return (
+    //first page
     <NavigationContainer>
       <MainStack profile={profile} logout={logout} />
     </NavigationContainer>

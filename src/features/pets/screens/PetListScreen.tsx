@@ -138,6 +138,13 @@ export default function PetListScreen({
         />
       </View>
 
+     <View style={{ marginBottom: 12 }}>
+        <Button
+          title="GO TO CHAT"
+          onPress={() => navigation.navigate("ThreadList")}
+        />
+      </View>
+
       <View style={{ marginBottom: 24 }}>
         <Button title="登出" onPress={onLogout} />
       </View>
